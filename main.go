@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-import "github.com/gofiber/fiber/v2"
+import (
+    "fmt"
+    "github.com/gofiber/fiber/v2"
+)
 
 func main() {
     fmt.Print("Hello")
