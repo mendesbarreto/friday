@@ -1,4 +1,4 @@
-module github.com/mendesbarreto/tech-digest
+module github.com/mendesbarreto/friday
 
 go 1.18
 
