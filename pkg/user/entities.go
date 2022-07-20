@@ -1,4 +1,4 @@
-package entities
+package user
 
 import (
 	"time"
@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-jj    Id primitive.ObjectID `json:"id" bson:"_id,omitempty"` 
+    Id primitive.ObjectID `json:"id" bson:"_id,omitempty"` 
     Username string `json:"title" bson:"title"`
     Password string `json:"password" bson:"password"`
     CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
