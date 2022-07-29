@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/mendesbarreto/friday/api/handlers"
 	"github.com/mendesbarreto/friday/pkg/infra/database"
 	"github.com/mendesbarreto/friday/pkg/user"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -37,6 +38,8 @@ func main() {
 
 		return nil
 	})
+
+	app.Get("/users", handlers.FindAll())
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, my name is F.R.I.D.A.Y, how can I help you?")
