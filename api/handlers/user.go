@@ -9,6 +9,7 @@ import (
 
 func FindAll() fiber.Handler {
 	return func(c *fiber.Ctx) error {
+
 		userRepo, err := user.NewUserRepository()
 
 		if err != nil {
