@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/mendesbarreto/friday/api/dto"
 	"github.com/mendesbarreto/friday/api/handlers"
 	"github.com/mendesbarreto/friday/pkg/infra/database"
 	"github.com/mendesbarreto/friday/pkg/user"
@@ -13,22 +14,37 @@ import (
 )
 
 func main() {
-	fmt.Print("Hello")
-
 	app := fiber.New()
 
 	app.Post("/users", func(ctx *fiber.Ctx) error {
-
 		mongo, err := database.New()
 		if err != nil {
 			log.Fatal(err)
 			return err
 		}
 
+		var userRequest dto.CreateUserRequestBody
+
+		payload := struct {
+			Name string `json:"name"`
+		}{}
+
+		ctx.BodyParser(&payload)
+
+		log.Println("payload  = ", payload)
+		err = ctx.BodyParser(&userRequest)
+
+		if err != nil {
+			log.Fatal(err)
+			ctx.Status(http.StatusBadRequest)
+			return dto.BadRequest(err.Error())
+		}
+
+		log.Println(userRequest)
 		user := user.User{
-			Username:  "mendesbarreto",
-			Id:        primitive.NewObjectID(),
-			Password:  "123456",
+			Username:  userRequest.Email,
+			ID:        primitive.NewObjectID(),
+			Password:  userRequest.Password,
 			CreatedAt: time.Now(),
 		}
 

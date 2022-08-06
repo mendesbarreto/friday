@@ -1,3 +1,0 @@
-package presenter
-
-//func UserSuccessResponse

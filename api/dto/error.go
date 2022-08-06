@@ -1,4 +1,4 @@
-package presenter
+package dto 
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -9,5 +9,9 @@ func InternalServerError(msg string) error {
 }
 
 func BadRequest(msg string) error {
+	return fiber.NewError(fiber.StatusNotFound, msg)
+}
+
+func NotFound(msg string) error {
 	return fiber.NewError(fiber.StatusNotFound, msg)
 }
