@@ -13,6 +13,7 @@ const USER_COLLECTION = "users"
 
 type UserRepository interface {
 	FindAll() ([]*User, error)
+	Create(*User) (*User, error)
 }
 
 type MongoUserRepository struct {
@@ -47,8 +48,18 @@ func (u *MongoUserRepository) FindAll() ([]*User, error) {
 	return result, cursor.Err()
 }
 
-func (u *MongoUserRepository) Create() (*User, error) {
-	return nil, nil
+func (u *MongoUserRepository) Create(user *User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), database.MONGO_QUERY_TIMEOUT)
+
+	defer cancel()
+
+	_, err := u.collection.InsertOne(ctx, user)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *MongoUserRepository) FindById() (*User, error) {
