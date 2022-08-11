@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mendesbarreto/friday/api/dto"
+	"github.com/mendesbarreto/friday/api/validation"
 	"github.com/mendesbarreto/friday/pkg/user"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -44,6 +45,12 @@ func CreateUser() fiber.Handler {
 		if err != nil {
 			log.Fatal(err)
 			return dto.BadRequest(err.Error())
+		}
+
+		errors := validation.ValidateStruct(userRequest)
+
+		if errors != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(errors)
 		}
 
 		user := user.User{
