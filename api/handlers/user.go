@@ -44,13 +44,13 @@ func CreateUser() fiber.Handler {
 
 		if err != nil {
 			log.Fatal(err)
-			return dto.BadRequest(err.Error())
+			return dto.BadRequest(ctx, err.Error())
 		}
 
-		errors := validation.ValidateStruct(userRequest)
+		validationErr := validation.ValidateStruct(userRequest)
 
-		if errors != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(errors)
+		if validationErr != nil {
+			return dto.BadRequestWithValidationError(ctx, validationErr)
 		}
 
 		user := user.User{
