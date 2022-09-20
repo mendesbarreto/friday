@@ -20,6 +20,22 @@ type MongoUserRepository struct {
 	collection *mongo.Collection
 }
 
+func (u *MongoUserRepository) FindByUserName(username string) (*User, error) {
+	var result *User
+
+	ctx, cancel := context.WithTimeout(context.Background(), database.MONGO_QUERY_TIMEOUT)
+
+	defer cancel()
+
+	err := u.collection.FindOne(ctx, bson.M{"username": username}).Decode(result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func (u *MongoUserRepository) FindAll() ([]*User, error) {
 	var result []*User
 

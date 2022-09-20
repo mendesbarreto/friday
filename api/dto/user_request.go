@@ -9,3 +9,8 @@ type CreateUserRequestBody struct {
 type GetUserByIdRequestParam struct {
 	ID string `json:"id"`
 }
+
+type AuthenticateUserRequestBody struct {
+	Username string `json:"username" validate:"required, email"`
+	Password string `json:"password" validate:"required min=3,max=32"`
+}

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/mendesbarreto/friday/api/validation"
 	"github.com/mendesbarreto/friday/pkg/user"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func UserFindAll() fiber.Handler {
@@ -53,15 +55,51 @@ func CreateUser() fiber.Handler {
 			return dto.BadRequestWithValidationError(ctx, validationErr)
 		}
 
+		hash, err := bcrypt.GenerateFromPassword([]byte(userRequest.Password), bcrypt.DefaultCost)
+
 		user := user.User{
 			Username:  userRequest.Email,
 			ID:        primitive.NewObjectID(),
-			Password:  userRequest.Password,
+			Password:  string(hash),
 			CreatedAt: time.Now(),
 		}
 
 		userRepo.Create(&user)
 
 		return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{})
+	}
+}
+
+func AuthenticateUser() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		userRepo, err := user.NewUserRepository()
+
+		if err != nil {
+			return dto.InternalServerError(err.Error())
+		}
+
+		var authUserBody dto.AuthenticateUserRequestBody
+		err = ctx.BodyParser(&authUserBody)
+
+		if err != nil {
+			log.Fatal(err)
+			return dto.BadRequest(ctx, err.Error())
+		}
+
+		user, err := userRepo.FindByUserName(authUserBody.Username)
+
+		if err != nil {
+			log.Fatal(err)
+			return dto.InternalServerError(err.Error())
+		}
+
+		if user == nil {
+			userNotFound := dto.NotFound(fmt.Sprintf("User %s not found", authUserBody.Username))
+			log.Fatal(userNotFound)
+			return userNotFound
+		}
+
+		return ctx.SendStatus(fiber.StatusTeapot)
+
 	}
 }
