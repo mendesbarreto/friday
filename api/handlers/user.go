@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/mendesbarreto/friday/api/dto"
 	"github.com/mendesbarreto/friday/api/validation"
 	"github.com/mendesbarreto/friday/pkg/user"
@@ -82,23 +82,30 @@ func AuthenticateUser() fiber.Handler {
 		err = ctx.BodyParser(&authUserBody)
 
 		if err != nil {
-			log.Fatal(err)
 			return dto.BadRequest(ctx, err.Error())
 		}
 
 		user, err := userRepo.FindByUserName(authUserBody.Username)
 
 		if err != nil {
-			log.Fatal(err)
 			return dto.InternalServerError(err.Error())
 		}
 
 		if user == nil {
-			userNotFound := dto.NotFound(fmt.Sprintf("User %s not found", authUserBody.Username))
-			log.Fatal(userNotFound)
+			userNotFound := dto.NotFound("User not found or password is incorrect")
 			return userNotFound
 		}
 
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(authUserBody.Password))
+
+		if err != nil {
+			return dto.NotFound("User not found or password is incorrect")
+		}
+
+		token := jwt.New(jwt.SigningMethodHS256)
+
+		print(token)
+		//TODO: Start implementing jwt
 		return ctx.SendStatus(fiber.StatusTeapot)
 
 	}

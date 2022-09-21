@@ -27,7 +27,7 @@ func (u *MongoUserRepository) FindByUserName(username string) (*User, error) {
 
 	defer cancel()
 
-	err := u.collection.FindOne(ctx, bson.M{"username": username}).Decode(result)
+	err := u.collection.FindOne(ctx, bson.M{"username": username}).Decode(&result)
 
 	if err != nil {
 		return nil, err
@@ -45,11 +45,11 @@ func (u *MongoUserRepository) FindAll() ([]*User, error) {
 
 	cursor, err := u.collection.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{Key: "username", Value: 1}}))
 
+	defer cursor.Close(ctx)
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
 		user := new(User)
