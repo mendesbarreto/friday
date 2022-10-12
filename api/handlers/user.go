@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/mendesbarreto/friday/api/dto"
 	"github.com/mendesbarreto/friday/api/validation"
-	"github.com/mendesbarreto/friday/pkg/user"
+	userpkg "github.com/mendesbarreto/friday/pkg/user"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,10 +16,10 @@ import (
 func UserFindAll() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 
-		userRepo, err := user.NewUserRepository()
+		userRepo, err := userpkg.NewUserRepository()
 
 		if err != nil {
-			return dto.InternalServerError(err.Error())
+			return dto.InternalServerError(ctx, err.Error())
 		}
 
 		result, err := userRepo.FindAll()
@@ -35,10 +35,10 @@ func UserFindAll() fiber.Handler {
 
 func CreateUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		userRepo, err := user.NewUserRepository()
+		userRepo, err := userpkg.NewUserRepository()
 
 		if err != nil {
-			return dto.InternalServerError(err.Error())
+			return dto.InternalServerError(ctx, err.Error())
 		}
 
 		var userRequest dto.CreateUserRequestBody
@@ -55,16 +55,32 @@ func CreateUser() fiber.Handler {
 			return dto.BadRequestWithValidationError(ctx, validationErr)
 		}
 
-		hash, err := bcrypt.GenerateFromPassword([]byte(userRequest.Password), bcrypt.DefaultCost)
+		user, err := userRepo.FindByUserName(userRequest.Email)	
+		if err != nil {
+			return dto.InternalServerError(ctx, err.Error())
+		}
 
-		user := user.User{
+		if user != nil {
+			return dto.Conflict(ctx, "User already exists")
+		}
+
+		hash, err := bcrypt.GenerateFromPassword([]byte(userRequest.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return dto.InternalServerError(ctx, err.Error())
+		}
+
+		newUser := userpkg.User {
 			Username:  userRequest.Email,
 			ID:        primitive.NewObjectID(),
 			Password:  string(hash),
 			CreatedAt: time.Now(),
 		}
 
-		userRepo.Create(&user)
+		err = userRepo.Create(&newUser)
+
+		if err != nil {
+			return dto.InternalServerError(ctx, err.Error()) 
+		}
 
 		return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{})
 	}
@@ -72,10 +88,10 @@ func CreateUser() fiber.Handler {
 
 func AuthenticateUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		userRepo, err := user.NewUserRepository()
+		userRepo, err := userpkg.NewUserRepository()
 
 		if err != nil {
-			return dto.InternalServerError(err.Error())
+			return dto.InternalServerError(ctx, err.Error())
 		}
 
 		var authUserBody dto.AuthenticateUserRequestBody
@@ -88,7 +104,7 @@ func AuthenticateUser() fiber.Handler {
 		user, err := userRepo.FindByUserName(authUserBody.Username)
 
 		if err != nil {
-			return dto.InternalServerError(err.Error())
+			return dto.InternalServerError(ctx, err.Error())
 		}
 
 		if user == nil {

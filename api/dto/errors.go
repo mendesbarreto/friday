@@ -5,8 +5,8 @@ import (
 	"github.com/mendesbarreto/friday/api/validation"
 )
 
-func InternalServerError(msg string) error {
-	return fiber.NewError(fiber.StatusInternalServerError, msg)
+func InternalServerError(ctx *fiber.Ctx, msg string) error {
+	return ctx.Status(fiber.StatusInternalServerError).SendString(msg)
 }
 
 func BadRequest(ctx *fiber.Ctx, msg string) error {
@@ -20,3 +20,8 @@ func BadRequestWithValidationError(ctx *fiber.Ctx, validationError *validation.V
 func NotFound(msg string) error {
 	return fiber.NewError(fiber.StatusNotFound, msg)
 }
+
+func Conflict(ctx *fiber.Ctx, msg string) error {
+	return ctx.Status(fiber.StatusConflict).SendString(msg)
+}
+
