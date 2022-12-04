@@ -118,11 +118,26 @@ func AuthenticateUser() fiber.Handler {
 			return dto.NotFound("User not found or password is incorrect")
 		}
 
-		token := jwt.New(jwt.SigningMethodHS256)
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"user": dto.UserResponseBody {
+				ID: user.ID.Hex(),
+				Email: user.Username,
+			},
+		})
+		
+	    tokenStirng, err := token.SignedString([]byte("TopSecrete"))
+
+		if err != nil { 
+			return dto.InternalServerError(ctx, err.Error())
+		}
+
+		response := dto.AuthResponseBody {
+			// TODO: Add secrete on machine env variables
+			Token: tokenStirng,	
+		}
 
 		print(token)
-		//TODO: Start implementing jwt
-		return ctx.SendStatus(fiber.StatusTeapot)
+		return ctx.JSON(response)
 
 	}
 }

@@ -30,6 +30,11 @@ func (u *MongoUserRepository) FindByUserName(username string) (*User, error) {
 	err := u.collection.FindOne(ctx, bson.M{"username": username}).Decode(&result)
 
 	if err != nil {
+
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 
