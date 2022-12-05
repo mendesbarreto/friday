@@ -2,16 +2,21 @@ module github.com/mendesbarreto/friday
 
 go 1.18
 
-require github.com/go-playground/validator v9.31.0+incompatible
+require (
+	github.com/cdipaolo/sentiment v0.0.0-20200617002423-c697f64e7f10
+	github.com/go-playground/validator/v10 v10.11.0
+	github.com/gofiber/fiber/v2 v2.35.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
+	go.mongodb.org/mongo-driver v1.9.1
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/cdipaolo/goml v0.0.0-20220715001353-00e0c845ae1c // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/go-playground/validator/v10 v10.11.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
-	github.com/gofiber/fiber/v2 v2.35.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.15.7 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
@@ -23,9 +28,7 @@ require (
 	github.com/xdg-go/scram v1.0.2 // indirect
 	github.com/xdg-go/stringprep v1.0.2 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
-	go.mongodb.org/mongo-driver v1.9.1 // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
-	golang.org/x/sys v0.0.0-20220712014510-0a85c31ab51e // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/text v0.5.0 // indirect
 )

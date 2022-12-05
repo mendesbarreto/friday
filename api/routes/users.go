@@ -10,3 +10,7 @@ func RegisterUsersRoutes(app *fiber.App) {
 	app.Post("/users", handlers.CreateUser())
 	app.Post("/users/auth", handlers.AuthenticateUser())
 }
+
+func RegisterMLRoutes(app *fiber.App) {
+	app.Post("/text/sentiment", handlers.GetSentiment())
+}

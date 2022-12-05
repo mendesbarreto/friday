@@ -15,6 +15,7 @@ func main() {
 	})
 
 	routes.RegisterUsersRoutes(app)
+	routes.RegisterMLRoutes(app)
 
 	app.Listen(":3000")
 }
