@@ -1,11 +1,8 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"time"
-
-	"github.com/cdipaolo/sentiment"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/mendesbarreto/friday/api/dto"
@@ -144,45 +141,4 @@ func AuthenticateUser() fiber.Handler {
 	}
 }
 
-type SentimentResponse struct {
-   Score uint8 `json:"score"`
-}
-
-type SentimentRequestBody struct {
-   Sentence string `json:"sentence"`
-}
-
-func GetSentiment() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		
-		model, err := sentiment.Restore()
-
-		if err != nil {
-			return dto.InternalServerError(ctx, "The model can not be loaded")
-		}
-
-		var body SentimentRequestBody
-		err = ctx.BodyParser(&body)
-
-		if err != nil {
-			dto.BadRequest(ctx, "The request body has something wrong")
-		}
-
-		validationErr := validation.ValidateStruct(&body)
-
-		if validationErr != nil {
-			return dto.BadRequestWithValidationError(ctx, validationErr)	
-		}
-
-		analysis := model.SentimentAnalysis(body.Sentence, sentiment.English)
-			
-		result := SentimentResponse{
-			Score: analysis.Score,
-		}
-
-		fmt.Println(result)
-
-		return ctx.Status(fiber.StatusOK).JSON(result)
-	}
-}
 

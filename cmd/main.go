@@ -16,6 +16,7 @@ func main() {
 
 	routes.RegisterUsersRoutes(app)
 	routes.RegisterMLRoutes(app)
+	routes.RegisterTwitterRoutes(app)
 
 	app.Listen(":3000")
 }

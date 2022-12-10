@@ -14,3 +14,7 @@ func RegisterUsersRoutes(app *fiber.App) {
 func RegisterMLRoutes(app *fiber.App) {
 	app.Post("/text/sentiment", handlers.GetSentiment())
 }
+
+func RegisterTwitterRoutes(app *fiber.App) {
+	app.Get("/twitter/list/:id", handlers.GetTweetsFromToday())
+}
