@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mendesbarreto/friday/api/dto"
 )
@@ -55,7 +54,7 @@ func GetTweetsFromToday() fiber.Handler {
         }
 
         request.Header = http.Header{
-            "Authorization": { "Bearer " },
+            "Authorization": { "Bearer AAAAAAAAAAAAAAAAAAAAAPcbkQEAAAAAVIe%2Bm9NEzwFDLS5muXBQ6QAQ3zk%3D4mSNYNXfHOO5NoFKCaXYd9RtGmFUDl8Y7RlVNoFKRRKFgXQ6V7" },
         }
 
         res, err := client.Do(request)
