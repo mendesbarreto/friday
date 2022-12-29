@@ -37,7 +37,7 @@ type TweetSentmentResponse struct {
     Data []TweetSentment `json:"data"`
 }
 
-const twitterUrl string = "https://api.twitter.com/2/lists/1530602256525041665/tweets"
+const twitterUrl string = "https://api.twitter.com/2/lists/%s/tweets"
 var twitterToken string = os.Getenv("TWITTER_API_TOKEN")
 
 func getTweetSentment(message string) uint8 {
@@ -51,23 +51,14 @@ func getTweetSentment(message string) uint8 {
     return sentiment
 }
 
-func GetTweetsFromToday() fiber.Handler {
-    return func (ctx *fiber.Ctx) error {
-
-        listId := ctx.Params("id")
-
-        if len(listId) == 0 {
-            return dto.BadRequest(ctx, "The url should contain the string")
-        }
- 
+func GetTweetsFromList(listId string) (*TweetsRespose, error) {
         client := http.Client{}
 
-        request, err := http.NewRequest("GET", twitterUrl, nil)
-
+        request, err := http.NewRequest("GET", fmt.Sprintf(twitterUrl, listId), nil)
         if err != nil {
-            return dto.InternalServerError(ctx, "The request could not be created")
+            return nil, err
         }
-        
+
         twitterBearer := fmt.Sprintf("Bearer %s", twitterToken)
 
         request.Header = http.Header{
@@ -75,27 +66,39 @@ func GetTweetsFromToday() fiber.Handler {
         }
 
         res, err := client.Do(request)
-
-        if err != nil {
-            return dto.InternalServerError(ctx, err.Error())
-        }
         
         defer res.Body.Close()
-
 
         var result TweetsRespose
         resBody, err := ioutil.ReadAll(res.Body)
 
         if err := json.Unmarshal(resBody, &result); err != nil {
+            return nil, err
+        }
+
+    return &result, nil
+}
+
+func GetTweetsFromToday() fiber.Handler {
+    return func (ctx *fiber.Ctx) error {
+        listId := ctx.Params("id")
+
+        if len(listId) == 0 {
+            return dto.BadRequest(ctx, "The url should contain the string")
+        }
+
+        tweets, err := GetTweetsFromList(listId)
+
+        if err != nil {
             return dto.InternalServerError(ctx, err.Error())
         }
 
         response := TweetSentmentResponse{
-            Data: make([]TweetSentment, len(result.Data)), 
+            Data: make([]TweetSentment, len(tweets.Data)), 
         }
 
         var wg sync.WaitGroup
-        for index, data := range result.Data {
+        for index, data := range tweets.Data {
             wg.Add(1)
             go func(index int, tweet Tweet) {
                 response.Data[index] = TweetSentment{
