@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"sync"
 	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/mendesbarreto/friday/api/dto"
 )
@@ -27,7 +30,7 @@ type Meta struct {
 
 type TweetSentment struct {
     Tweet Tweet `json:"tweet"` 
-    Score uint8 `json:"score"`
+    Score int8 `json:"score"`
 }
 
 type TweetSentmentResponse struct {
@@ -35,6 +38,18 @@ type TweetSentmentResponse struct {
 }
 
 const twitterUrl string = "https://api.twitter.com/2/lists/1530602256525041665/tweets"
+var twitterToken string = os.Getenv("TWITTER_API_TOKEN")
+
+func getTweetSentment(message string) uint8 {
+    sentiment, err := GetTextSentiment(message)
+
+    if err != nil {
+        fmt.Println("Twitter was not able to score")
+        return 3
+    }
+
+    return sentiment
+}
 
 func GetTweetsFromToday() fiber.Handler {
     return func (ctx *fiber.Ctx) error {
@@ -52,9 +67,11 @@ func GetTweetsFromToday() fiber.Handler {
         if err != nil {
             return dto.InternalServerError(ctx, "The request could not be created")
         }
+        
+        twitterBearer := fmt.Sprintf("Bearer %s", twitterToken)
 
         request.Header = http.Header{
-            "Authorization": { "Bearer AAAAAAAAAAAAAAAAAAAAAPcbkQEAAAAAVIe%2Bm9NEzwFDLS5muXBQ6QAQ3zk%3D4mSNYNXfHOO5NoFKCaXYd9RtGmFUDl8Y7RlVNoFKRRKFgXQ6V7" },
+            "Authorization": { twitterBearer },
         }
 
         res, err := client.Do(request)
@@ -77,20 +94,20 @@ func GetTweetsFromToday() fiber.Handler {
             Data: make([]TweetSentment, len(result.Data)), 
         }
 
+        var wg sync.WaitGroup
         for index, data := range result.Data {
-
-            sentiment, err := GetTextSentiment(data.Text)
-
-            if err != nil {
-                fmt.Println("Twitter was not able to score")
-            }
-
-            response.Data[index] = TweetSentment{
-                Tweet: data,
-                Score: sentiment,
-            }
+            wg.Add(1)
+            go func(index int, tweet Tweet) {
+                response.Data[index] = TweetSentment{
+                    Tweet: tweet,
+                    Score: int8(getTweetSentment(tweet.Text)),
+                }
+                wg.Done()
+            }(index, data)
         }
 
+        wg.Wait()
+        
         return ctx.Status(200).JSON(response)
     }
 }
