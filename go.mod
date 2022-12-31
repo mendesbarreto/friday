@@ -6,7 +6,7 @@ require (
 	github.com/cdipaolo/sentiment v0.0.0-20200617002423-c697f64e7f10
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/gofiber/fiber/v2 v2.35.0
-	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 )
