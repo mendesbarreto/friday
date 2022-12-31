@@ -11,6 +11,9 @@ on:
       - "go.mod"
       - "go.sum"
       - "./.github/workflows/release-docker-image.yaml"
+    branches:
+      - "!*"
+      - "master"
 
 env:
   GH_PAT: ${{ secrets.GH_PAT }}
