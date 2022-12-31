@@ -2,4 +2,6 @@
 
 Female Replacement Intelligent Digital Assistant Youth 😝
 
-The ideia bihind it is to have a middleware to all my services that I will put in place. The services for now will be inside FRIDAY, but in the future I will split in little pods using Kubernetes
+My plans to this project is to build a little middeware for my future projects =) .
+
+TODO: Add how to run the app
