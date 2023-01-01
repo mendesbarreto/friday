@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.35.0
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	go.mongodb.org/mongo-driver v1.11.1
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
+	golang.org/x/crypto v0.4.0
 )
 
 require (
