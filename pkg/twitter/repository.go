@@ -1,4 +1,4 @@
-package tweets
+package twitter
 
 import (
 	"context"
@@ -11,10 +11,6 @@ import (
 )
 
 const TWEETS_COLLECTION = "tweets"
-
-type Tweet struct {
-	ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-}
 
 type TweetsRepository interface {
 	Count() (int64, error)

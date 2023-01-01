@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/mendesbarreto/friday/api/dto"
@@ -54,7 +55,7 @@ func CreateUser() fiber.Handler {
 			return dto.BadRequestWithValidationError(ctx, validationErr)
 		}
 
-		user, err := userRepo.FindByUserName(userRequest.Email)	
+		user, err := userRepo.FindByUserName(userRequest.Email)
 		if err != nil {
 			return dto.InternalServerError(ctx, err.Error())
 		}
@@ -68,7 +69,7 @@ func CreateUser() fiber.Handler {
 			return dto.InternalServerError(ctx, err.Error())
 		}
 
-		newUser := userpkg.User {
+		newUser := userpkg.User{
 			Username:  userRequest.Email,
 			ID:        primitive.NewObjectID(),
 			Password:  string(hash),
@@ -78,7 +79,7 @@ func CreateUser() fiber.Handler {
 		err = userRepo.Create(&newUser)
 
 		if err != nil {
-			return dto.InternalServerError(ctx, err.Error()) 
+			return dto.InternalServerError(ctx, err.Error())
 		}
 
 		return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{})
@@ -118,21 +119,21 @@ func AuthenticateUser() fiber.Handler {
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"user": dto.UserResponseBody {
-				ID: user.ID.Hex(),
+			"user": dto.UserResponseBody{
+				ID:    user.ID.Hex(),
 				Email: user.Username,
 			},
 		})
-		
-	    tokenStirng, err := token.SignedString([]byte("TopSecrete"))
 
-		if err != nil { 
+		tokenStirng, err := token.SignedString([]byte("TopSecrete"))
+
+		if err != nil {
 			return dto.InternalServerError(ctx, err.Error())
 		}
 
-		response := dto.AuthResponseBody {
+		response := dto.AuthResponseBody{
 			// TODO: Add secrete on machine env variables
-			Token: tokenStirng,	
+			Token: tokenStirng,
 		}
 
 		print(token)
@@ -140,5 +141,3 @@ func AuthenticateUser() fiber.Handler {
 
 	}
 }
-
-
