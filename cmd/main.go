@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		DisableKeepalive:  true,
+		EnablePrintRoutes: true,
+	})
 
 	app.Use(middleware.DefaultAccepts)
 	app.Get("/", func(c *fiber.Ctx) error {

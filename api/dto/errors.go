@@ -25,3 +25,6 @@ func Conflict(ctx *fiber.Ctx, msg string) error {
 	return ctx.Status(fiber.StatusConflict).SendString(msg)
 }
 
+func NotAuthorized(ctx *fiber.Ctx, msg string) error {
+	return ctx.Status(401).SendString(msg)
+}

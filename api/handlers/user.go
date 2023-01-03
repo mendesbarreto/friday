@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -35,6 +36,14 @@ func UserFindAll() fiber.Handler {
 
 func CreateUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
+		fmt.Println("OI")
 		userRepo, err := userpkg.NewUserRepository()
 
 		if err != nil {
@@ -125,6 +134,7 @@ func AuthenticateUser() fiber.Handler {
 			},
 		})
 
+		//TODO: Replace the secrete by something that's really a secrete 😅
 		tokenStirng, err := token.SignedString([]byte("TopSecrete"))
 
 		if err != nil {
