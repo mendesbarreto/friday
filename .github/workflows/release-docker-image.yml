@@ -80,7 +80,7 @@ jobs:
             type=raw,value=${{ env.GIT_BRANCH }}-${{ env.COMMIT_DATE }}-${{ env.COMMIT_TIME }}-${{ env.GH_SHA_SHORT }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         timeout-minutes: 15
         with:
           context: .
