@@ -34,7 +34,7 @@ jobs:
           workflow_id: build-docker-image.yml
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 10
           persist-credentials: false
