@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - run: echo "🔥 The job triggered by a ${{ github.event_name }}"
-      - uses: styfle/cancel-workflow-action@0.11.0
+      - uses: styfle/cancel-workflow-action@0.13.1
         with:
           workflow_id: build-docker-image.yml
           access_token: ${{ github.token }}
