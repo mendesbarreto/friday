@@ -1,6 +1,6 @@
 module github.com/mendesbarreto/friday
 
-go 1.18
+go 1.24
 
 require (
 	github.com/cdipaolo/sentiment v0.0.0-20200617002423-c697f64e7f10
@@ -18,7 +18,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
